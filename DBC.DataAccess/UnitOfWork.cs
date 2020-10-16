@@ -16,18 +16,7 @@ namespace DBC.DataAccess
 
         public async Task CommitAsync()
         {
-            try
-            {
-                var affectedEntities = _context.ChangeTracker.Entries().Where(e => e.State == Microsoft.EntityFrameworkCore.EntityState.Added ||
-                e.State == Microsoft.EntityFrameworkCore.EntityState.Modified || e.State == Microsoft.EntityFrameworkCore.EntityState.Deleted);
-                await _context.SaveChangesAsync();
-            }
-            catch (System.Exception e)
-            {
-
-                throw;
-            }
-
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -1,13 +1,16 @@
 ﻿using DBC.Infrastructure.DataAccess;
+using Microsoft.Data.Sqlite;
 using System.Configuration;
+using System.Data.Common;
 
 namespace DBC.ConsoleHost
 {
     public class ConnectionStringProvider : IConnectionStringProvider
     {
-        public string ConnectionString()
+        public DbConnection Connection()
         {
-            return ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            var connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            return new SqliteConnection(connectionString);
         }
     }
 }

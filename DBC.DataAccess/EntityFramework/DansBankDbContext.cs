@@ -20,6 +20,7 @@ namespace DBC.DataAccess.EntityFramework
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfiguration(new MunicipalityConfig());
@@ -30,7 +31,7 @@ namespace DBC.DataAccess.EntityFramework
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlite(_connectionProvider.ConnectionString());
+            optionsBuilder.UseSqlite(_connectionProvider.Connection());
         }
     }
 }

@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DBC.DataAccess\DBC.DataAccess.csproj" />
+    <ProjectReference Include="..\DBC.Models\DBC.Models.csproj" />
   </ItemGroup>
 
 </Project>

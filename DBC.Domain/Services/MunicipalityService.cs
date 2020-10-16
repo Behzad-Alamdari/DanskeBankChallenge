@@ -28,28 +28,30 @@ namespace DBC.Domain.Services
         public async Task<string> AddAsync(string name)
         {
             if (await _municipalityRepository.Exist(name))
-                return $"A municipality with the name of \"{name}\" already exists";
+                return Messages.SameMunicipalityExist;
 
             var municipality = new Municipality { Name = name };
             _municipalityRepository.Add(municipality);
             await _unitOfWork.CommitAsync();
 
-            return $"Municipality of \"{name}\" added";
+            return Messages.NewMunicipalityAdded;
         }
 
         public async Task<Municipality> FindAsync(string name)
         {
-            return await _municipalityRepository.GetAsync(m => m.Name == name);
+            // Sqlite is case sensitive
+            name = name.ToLower();
+            return await _municipalityRepository.GetAsync(m => m.Name.ToLower() == name);
         }
 
         public async Task<string> AddTaxRule(string municipalityName, TaxRule taxRule)
         {
             if (taxRule.Periods?.Any() != true)
-                return $"Tax rule must at least has one period";
+                return Messages.TaxRuleMustHavePeriod;
 
             var municipality = await _municipalityRepository.GetWithDetails(municipalityName);
             if (municipality == null)
-                return $"No municipality with the name of \"{municipalityName}\" exists";
+                return Messages.NoMunicipalityWithNameExist;
 
             if (municipality.TaxRules == null)
                 municipality.TaxRules = new List<TaxRule>();
@@ -58,21 +60,21 @@ namespace DBC.Domain.Services
 
             await _unitOfWork.CommitAsync();
 
-            return $"A tax rule has been added for \"{municipalityName}\"";
+            return Messages.TaxRuleAdded;
         }
 
-        public async Task<float> FindApplicableTax(string municipalityName, DateTime date)
+        public async Task<(float percentage, string message)> FindApplicableTax(string municipalityName, DateTime date)
         {
             var municipality = await _municipalityRepository.GetWithDetails(municipalityName);
             if (municipality == null)
-                return -1; //$"No municipality with the name of \"{municipalityName}\" exists";
+                return (int.MinValue , Messages.NoMunicipalityWithNameExist);
 
             if (municipality.TaxRules?.Any() != true)
-                return -1; // No rules is registered for this municipality
+                return (int.MinValue, Messages.NoRuleForMunicipality);
 
             var tax = _taxCanculator.CalculateTaxFor(municipality, date);
 
-            return tax;
+            return (tax, string.Empty);
         }
 
         public async Task<List<TaxRule>> FindMunicipalityTaxRules(string municipalityName)

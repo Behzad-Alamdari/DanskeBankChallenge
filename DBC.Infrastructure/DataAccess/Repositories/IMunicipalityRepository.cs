@@ -28,6 +28,7 @@ namespace DBC.Infrastructure.DataAccess.Repositories
         /// <param name="predicate">A function to test each element for a condition.</param>
         /// <param name="pagination">would define the required paging</param>
         /// <returns>A list of entities</returns>
-        Task<List<Municipality>> GetListAsync(Pagination pagination, Expression<Func<Municipality, bool>> predicate = null);
+        Task<List<Municipality>> GetListAsync(Pagination pagination = null,
+            Expression<Func<Municipality, bool>> predicate = null);
     }
 }

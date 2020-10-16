@@ -1,7 +1,9 @@
-﻿namespace DBC.Infrastructure.DataAccess
+﻿using System.Data.Common;
+
+namespace DBC.Infrastructure.DataAccess
 {
     public interface IConnectionStringProvider
     {
-        string ConnectionString();
+        DbConnection Connection();
     }
 }

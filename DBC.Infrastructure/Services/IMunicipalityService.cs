@@ -35,7 +35,7 @@ namespace DBC.Infrastructure.Services
         /// <param name="municipalityName">The municipality name</param>
         /// <param name="date">The date of interest</param>
         /// <returns>Tax percentage applicable in the given date</returns>
-        Task<float> FindApplicableTax(string municipalityName, DateTime date);
+        Task<(float percentage, string message)> FindApplicableTax(string municipalityName, DateTime date);
 
 
         /// <summary>

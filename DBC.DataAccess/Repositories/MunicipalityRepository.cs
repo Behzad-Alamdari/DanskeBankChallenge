@@ -20,16 +20,17 @@ namespace DBC.DataAccess.Repositories
 
         public async Task<bool> Exist(string municipalityName)
         {
+            municipalityName = municipalityName.ToLower();
             return await Context.Municipalities
-                .AnyAsync(m => m.Name == municipalityName);
+                .AnyAsync(m => m.Name.ToLower() == municipalityName);
         }
 
-        public async Task<List<Municipality>> GetListAsync(Pagination pagination, 
+        public async Task<List<Municipality>> GetListAsync(Pagination pagination = null,
             Expression<Func<Municipality, bool>> predicate = null)
         {
             // Get Municipalities as IQueryable
             var query = Context.Municipalities?.OrderBy(m => m.Name).AsQueryable();
-            
+
             // This should not happen, but to satisfy null reference checking, we do this check
             if (query == null)
                 return new List<Municipality>();
@@ -40,9 +41,10 @@ namespace DBC.DataAccess.Repositories
 
 
             // If pagination is not null, they will be applied to query
-                query = query
-                    .Skip((pagination.PageNumber - 1) * pagination.PageSize)
-                    .Take(pagination.PageSize);
+            if(pagination != null)
+            query = query
+                .Skip((pagination.PageNumber - 1) * pagination.PageSize)
+                .Take(pagination.PageSize);
 
             // Return the municipalities list
             return await query.ToListAsync();
@@ -50,9 +52,10 @@ namespace DBC.DataAccess.Repositories
 
         public async Task<Municipality> GetWithDetails(string municipalityName)
         {
+            municipalityName = municipalityName.ToLower();
             return await Context.Municipalities
                 .Include(m => m.TaxRules).ThenInclude(t => t.Periods)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(m => m.Name.ToLower() == municipalityName);
         }
     }
 }

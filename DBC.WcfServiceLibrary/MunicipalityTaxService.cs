@@ -3,10 +3,12 @@ using DBC.Infrastructure.DataContracts;
 using DBC.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
+using System.ServiceModel;
 using System.Threading.Tasks;
 
 namespace DBC.WcfServiceLibrary
 {
+    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class MunicipalityTaxService : IMunicipalityTaxService
     {
         private readonly IMunicipalityService _municipalityService;
@@ -30,9 +32,16 @@ namespace DBC.WcfServiceLibrary
             return message;
         }
 
+        [FaultContract(typeof(FaultHandle))]
         public async Task<float> FindApplicableTaxAsync(string municipalityName, DateTime date)
         {
-            return await _municipalityService.FindApplicableTax(municipalityName, date);
+            var (percentage, message) = await _municipalityService.FindApplicableTax(municipalityName, date);
+            if (!string.IsNullOrEmpty(message))
+            {
+                var fault = new FaultHandle(message);
+                throw new FaultException<FaultHandle>(fault);
+            }    
+                return percentage;
         }
 
         public async Task<List<TaxRuleVw>> FindMunicipalityTaxRulesAsync(string municipalityName)
