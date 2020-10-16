@@ -11,7 +11,7 @@ namespace DBC.Infrastructure.AutoMapperConfigs
         public static MapperConfiguration InitializeAutoMapper()
         {
             var types = new List<Type>();
-            types.AddRange(Assembly.Load(new AssemblyName("DBC.Infrastructure"))
+            types.AddRange(Assembly.Load(new AssemblyName("DBC.Contracts"))
                 .GetExportedTypes()
                 .Where(t => !t.GetTypeInfo().IsInterface)
                 .ToList());

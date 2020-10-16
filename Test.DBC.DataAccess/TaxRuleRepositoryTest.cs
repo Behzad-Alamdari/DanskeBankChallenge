@@ -1,10 +1,7 @@
 ﻿using DBC.DataAccess.EntityFramework;
 using DBC.DataAccess.Repositories;
-using DBC.Infrastructure.DataAccess;
 using DBC.Models;
-using FakeItEasy;
 using FluentAssertions;
-using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +16,8 @@ namespace Test.DBC.DataAccess
         public async Task GetWithDetails_SelectingTasRule_WillIncludePeriosAsync()
         {
             // Arrange
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-            var connectionProvider = A.Fake<IConnectionStringProvider>();
-            A.CallTo(() => connectionProvider.Connection()).Returns(connection);
-            var context = new DansBankDbContext(connectionProvider);
+            var fackDatabaseBuilder = new FackDataBaseBuildHelper();
+            var context = new DansBankDbContext(fackDatabaseBuilder);
             context.Database.EnsureCreated();
 
             var municipalityName = "Copenhagen";
@@ -32,7 +26,7 @@ namespace Test.DBC.DataAccess
 
             var id = Guid.NewGuid();
             var trId = Guid.NewGuid();
-            using (var db = new DansBankDbContext(connectionProvider))
+            using (var db = new DansBankDbContext(fackDatabaseBuilder))
             {
                 var m = new Municipality { Id = id, Name = municipalityName, TaxRules = new List<TaxRule>() };
                 db.Municipalities.Add(m);
@@ -51,7 +45,7 @@ namespace Test.DBC.DataAccess
                 db.SaveChanges();
             }
 
-            var taxRuleRepository = new TaxRuleRepository(new DansBankDbContext(connectionProvider));
+            var taxRuleRepository = new TaxRuleRepository(new DansBankDbContext(fackDatabaseBuilder));
 
             // Act
             var taxRule = await taxRuleRepository.GetWithDetails(trId);

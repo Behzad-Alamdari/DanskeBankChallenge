@@ -2,10 +2,7 @@ using DBC.DataAccess.EntityFramework;
 using DBC.DataAccess.Repositories;
 using DBC.Infrastructure.DataAccess;
 using DBC.Models;
-using FakeItEasy;
 using FluentAssertions;
-using FluentAssertions.Common;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -22,16 +19,13 @@ namespace Test.DBC.DataAccess
         public void Add_Manucipality()
         {
             // Arrange
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-            var connectionProvider = A.Fake<IConnectionStringProvider>();
-            A.CallTo(() => connectionProvider.Connection()).Returns(connection);
-            var context = new DansBankDbContext(connectionProvider);
+            var fackDatabaseBuilder = new FackDataBaseBuildHelper();
+            var context = new DansBankDbContext(fackDatabaseBuilder);
             context.Database.EnsureCreated();
 
             var municipalityName = "Copenhagen";
             var municipalityName2 = "Copenhagen2";
-            var db = new DansBankDbContext(connectionProvider);
+            var db = new DansBankDbContext(fackDatabaseBuilder);
             var municipalityRepository = new MunicipalityRepository(db);
             var mId = Guid.NewGuid();
             var municipality = new Municipality { Name = municipalityName };
@@ -43,7 +37,7 @@ namespace Test.DBC.DataAccess
 
             Municipality m = null;
             Municipality m2 = null;
-            using (var db2 = new DansBankDbContext(connectionProvider))
+            using (var db2 = new DansBankDbContext(fackDatabaseBuilder))
             {
                 m = db2.Municipalities.Find(id);
                 m2 = db2.Municipalities.Find(id2);
@@ -65,24 +59,21 @@ namespace Test.DBC.DataAccess
         public async Task Exist_CanHandleDanishSpecialCharacters()
         {
             // Arrange
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-            var connectionProvider = A.Fake<IConnectionStringProvider>();
-            A.CallTo(() => connectionProvider.Connection()).Returns(connection);
-            var context = new DansBankDbContext(connectionProvider);
+            var fackDatabaseBuilder = new FackDataBaseBuildHelper();
+            var context = new DansBankDbContext(fackDatabaseBuilder);
             context.Database.EnsureCreated();
 
             var municipalityName = "жеш";
 
 
             var id = Guid.NewGuid();
-            using (var db = new DansBankDbContext(connectionProvider))
+            using (var db = new DansBankDbContext(fackDatabaseBuilder))
             {
                 db.Municipalities.Add(new Municipality { Id = id, Name = municipalityName });
                 db.SaveChanges();
             }
 
-            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(connectionProvider));
+            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(fackDatabaseBuilder));
 
             // Act
             var sameString = await municipalityRepository.Exist(municipalityName);
@@ -98,24 +89,21 @@ namespace Test.DBC.DataAccess
         public async Task Exist_ByGivingAnExistingMunicipalityName_ReturnTrueAsync()
         {
             // Arrange
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-            var connectionProvider = A.Fake<IConnectionStringProvider>();
-            A.CallTo(() => connectionProvider.Connection()).Returns(connection);
-            var context = new DansBankDbContext(connectionProvider);
+            var fackDatabaseBuilder = new FackDataBaseBuildHelper();
+            var context = new DansBankDbContext(fackDatabaseBuilder);
             context.Database.EnsureCreated();
 
             var municipalityName = "Copenhagen";
 
 
             var id = Guid.NewGuid();
-            using (var db = new DansBankDbContext(connectionProvider))
+            using (var db = new DansBankDbContext(fackDatabaseBuilder))
             {
                 db.Municipalities.Add(new Municipality { Id = id, Name = municipalityName });
                 db.SaveChanges();
             }
 
-            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(connectionProvider));
+            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(fackDatabaseBuilder));
 
             // Act
             var sameString = await municipalityRepository.Exist(municipalityName);
@@ -131,24 +119,21 @@ namespace Test.DBC.DataAccess
         public async Task Exist_ByGivingNoneExistingMunicipalityName_ReturnFalseAsync()
         {
             // Arrange
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-            var connectionProvider = A.Fake<IConnectionStringProvider>();
-            A.CallTo(() => connectionProvider.Connection()).Returns(connection);
-            var context = new DansBankDbContext(connectionProvider);
+            var fackDatabaseBuilder = new FackDataBaseBuildHelper();
+            var context = new DansBankDbContext(fackDatabaseBuilder);
             context.Database.EnsureCreated();
 
             var municipalityName = "Copenhagen";
 
 
             var id = Guid.NewGuid();
-            using (var db = new DansBankDbContext(connectionProvider))
+            using (var db = new DansBankDbContext(fackDatabaseBuilder))
             {
                 db.Municipalities.Add(new Municipality { Id = id, Name = municipalityName });
                 db.SaveChanges();
             }
 
-            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(connectionProvider));
+            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(fackDatabaseBuilder));
 
             // Act
             var sameString = await municipalityRepository.Exist("Aarhus");
@@ -167,24 +152,21 @@ namespace Test.DBC.DataAccess
         public async Task GetAsync_SelectingById_ReturnTheItemAsync()
         {
             // Arrange
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-            var connectionProvider = A.Fake<IConnectionStringProvider>();
-            A.CallTo(() => connectionProvider.Connection()).Returns(connection);
-            var context = new DansBankDbContext(connectionProvider);
+            var fackDatabaseBuilder = new FackDataBaseBuildHelper();
+            var context = new DansBankDbContext(fackDatabaseBuilder);
             context.Database.EnsureCreated();
 
             var municipalityName = "Copenhagen";
 
 
             var id = Guid.NewGuid();
-            using (var db = new DansBankDbContext(connectionProvider))
+            using (var db = new DansBankDbContext(fackDatabaseBuilder))
             {
                 db.Municipalities.Add(new Municipality { Id = id, Name = municipalityName });
                 db.SaveChanges();
             }
 
-            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(connectionProvider));
+            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(fackDatabaseBuilder));
 
             // Act
             var municipality = await municipalityRepository.GetAsync(id);
@@ -199,24 +181,21 @@ namespace Test.DBC.DataAccess
         public async Task GetAsync_SelectingByPredicate_ReturnTheItemAsync()
         {
             // Arrange
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-            var connectionProvider = A.Fake<IConnectionStringProvider>();
-            A.CallTo(() => connectionProvider.Connection()).Returns(connection);
-            var context = new DansBankDbContext(connectionProvider);
+            var fackDatabaseBuilder = new FackDataBaseBuildHelper();
+            var context = new DansBankDbContext(fackDatabaseBuilder);
             context.Database.EnsureCreated();
 
             var municipalityName = "Copenhagen";
 
 
             var id = Guid.NewGuid();
-            using (var db = new DansBankDbContext(connectionProvider))
+            using (var db = new DansBankDbContext(fackDatabaseBuilder))
             {
                 db.Municipalities.Add(new Municipality { Id = id, Name = municipalityName });
                 db.SaveChanges();
             }
 
-            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(connectionProvider));
+            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(fackDatabaseBuilder));
 
             // Act
             var municipality = await municipalityRepository.GetAsync(m => m.Name.ToLower() == municipalityName.ToLower());
@@ -234,18 +213,15 @@ namespace Test.DBC.DataAccess
         public async Task GetList_NotProvideingPaginationAndCondition_WouldReturnAllMunicipalitis()
         {
             // Arrange
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-            var connectionProvider = A.Fake<IConnectionStringProvider>();
-            A.CallTo(() => connectionProvider.Connection()).Returns(connection);
-            var context = new DansBankDbContext(connectionProvider);
+            var fackDatabaseBuilder = new FackDataBaseBuildHelper();
+            var context = new DansBankDbContext(fackDatabaseBuilder);
             context.Database.EnsureCreated();
 
             var municipalityNames = new List<string>() { "Copenhagen", "Aarhus", "Aalborg", "Odense", "Esbjerg" };
 
 
 
-            using (var db = new DansBankDbContext(connectionProvider))
+            using (var db = new DansBankDbContext(fackDatabaseBuilder))
             {
                 foreach (var municipalityName in municipalityNames)
                 {
@@ -255,7 +231,7 @@ namespace Test.DBC.DataAccess
                 }
             }
 
-            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(connectionProvider));
+            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(fackDatabaseBuilder));
 
             // Act
             var municipalities = await municipalityRepository.GetListAsync();
@@ -270,18 +246,15 @@ namespace Test.DBC.DataAccess
         public async Task GetList_ByProvideingCondition_FilterMunicipalitis()
         {
             // Arrange
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-            var connectionProvider = A.Fake<IConnectionStringProvider>();
-            A.CallTo(() => connectionProvider.Connection()).Returns(connection);
-            var context = new DansBankDbContext(connectionProvider);
+            var fackDatabaseBuilder = new FackDataBaseBuildHelper();
+            var context = new DansBankDbContext(fackDatabaseBuilder);
             context.Database.EnsureCreated();
 
             var municipalityNames = new List<string>() { "Copenhagen", "Aarhus", "Aalborg", "Odense", "Esbjerg" };
 
 
 
-            using (var db = new DansBankDbContext(connectionProvider))
+            using (var db = new DansBankDbContext(fackDatabaseBuilder))
             {
                 foreach (var municipalityName in municipalityNames)
                 {
@@ -291,7 +264,7 @@ namespace Test.DBC.DataAccess
                 }
             }
 
-            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(connectionProvider));
+            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(fackDatabaseBuilder));
 
             // Act
             var municipalities = await municipalityRepository
@@ -307,18 +280,15 @@ namespace Test.DBC.DataAccess
         public async Task GetList_ByProvideingPagination_FilterMunicipalitis()
         {
             // Arrange
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-            var connectionProvider = A.Fake<IConnectionStringProvider>();
-            A.CallTo(() => connectionProvider.Connection()).Returns(connection);
-            var context = new DansBankDbContext(connectionProvider);
+            var fackDatabaseBuilder = new FackDataBaseBuildHelper();
+            var context = new DansBankDbContext(fackDatabaseBuilder);
             context.Database.EnsureCreated();
 
             var municipalityNames = new List<string>() { "Copenhagen", "Aarhus", "Aalborg", "Odense", "Esbjerg" };
 
 
 
-            using (var db = new DansBankDbContext(connectionProvider))
+            using (var db = new DansBankDbContext(fackDatabaseBuilder))
             {
                 foreach (var municipalityName in municipalityNames)
                 {
@@ -328,7 +298,7 @@ namespace Test.DBC.DataAccess
                 }
             }
 
-            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(connectionProvider));
+            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(fackDatabaseBuilder));
 
             // Act
             var municipalities = await municipalityRepository
@@ -349,18 +319,15 @@ namespace Test.DBC.DataAccess
         public async Task GetWithDetails_IncludeDetails()
         {
             // Arrange
-            var connection = new SqliteConnection("DataSource=:memory:");
-            connection.Open();
-            var connectionProvider = A.Fake<IConnectionStringProvider>();
-            A.CallTo(() => connectionProvider.Connection()).Returns(connection);
-            var context = new DansBankDbContext(connectionProvider);
+            var fackDatabaseBuilder = new FackDataBaseBuildHelper();
+            var context = new DansBankDbContext(fackDatabaseBuilder);
             context.Database.EnsureCreated();
 
             var municipalityName = "Copenhagen";
 
 
 
-            using (var db = new DansBankDbContext(connectionProvider))
+            using (var db = new DansBankDbContext(fackDatabaseBuilder))
             {
                 var id = Guid.NewGuid();
                 var m = new Municipality { Id = id, Name = municipalityName, TaxRules = new List<TaxRule>() };
@@ -378,7 +345,7 @@ namespace Test.DBC.DataAccess
                 db.SaveChanges();
             }
 
-            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(connectionProvider));
+            var municipalityRepository = new MunicipalityRepository(new DansBankDbContext(fackDatabaseBuilder));
 
             // Act
             var municipality = await municipalityRepository.GetWithDetails("Copenhagen");

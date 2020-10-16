@@ -2,7 +2,7 @@
 using DBC.Domain;
 using DBC.Infrastructure.AutoMapperConfigs;
 using DBC.Infrastructure.DataAccess;
-using DBC.WcfServiceLibrary;
+using DBC.WcfServices;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -13,22 +13,29 @@ namespace DBC.ConsoleHost
         public static IServiceProvider GetProvider()
         {
             var services = new ServiceCollection();
-            services.AddSingleton<IConnectionStringProvider, ConnectionStringProvider>();
+            services.AddSingleton<IDatabaseBuildHelper, DatabaseBuildHelper>();
             services.AddDomain();
-            services.AddWcfServiceLibrary();
+            services.AddWcfServices();
 
             // AutoMapper
             var mapper = AutoMapperConfig.InitializeAutoMapper().CreateMapper();
             services.AddSingleton(mapper);
 
-            var provider = services.BuildServiceProvider();
+            return services.BuildServiceProvider();
+        }
 
+        public static void EnsureDatabaseExistance(IServiceProvider provider)
+        {
             using (var db = (DansBankDbContext)provider.GetService(typeof(DansBankDbContext)))
             {
-                db.Database.EnsureCreated();
-            }
+                if (!db.Database.CanConnect())
+                {
+                    Console.WriteLine("Database is been created, please be patient. You will be notify when it is done");
+                    db.Database.EnsureCreated();
+                    Console.WriteLine("Database is been created");
+                }
 
-            return provider;
+            }
         }
     }
 }

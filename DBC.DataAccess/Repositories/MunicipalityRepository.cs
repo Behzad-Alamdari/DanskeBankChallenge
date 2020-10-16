@@ -20,7 +20,7 @@ namespace DBC.DataAccess.Repositories
 
         public async Task<bool> Exist(string municipalityName)
         {
-            municipalityName = municipalityName.ToLower();
+            municipalityName = municipalityName?.ToLower();
             return await Context.Municipalities
                 .AnyAsync(m => m.Name.ToLower() == municipalityName);
         }
@@ -52,7 +52,7 @@ namespace DBC.DataAccess.Repositories
 
         public async Task<Municipality> GetWithDetails(string municipalityName)
         {
-            municipalityName = municipalityName.ToLower();
+            municipalityName = municipalityName?.ToLower();
             return await Context.Municipalities
                 .Include(m => m.TaxRules).ThenInclude(t => t.Periods)
                 .FirstOrDefaultAsync(m => m.Name.ToLower() == municipalityName);

@@ -7,9 +7,9 @@ namespace DBC.DataAccess.EntityFramework
 {
     public class DansBankDbContext : DbContext
     {
-        private readonly IConnectionStringProvider _connectionProvider;
+        private readonly IDatabaseBuildHelper _connectionProvider;
 
-        public DansBankDbContext(IConnectionStringProvider connectionProvider)
+        public DansBankDbContext(IDatabaseBuildHelper connectionProvider)
         {
             _connectionProvider = connectionProvider;
         }
@@ -31,7 +31,7 @@ namespace DBC.DataAccess.EntityFramework
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlite(_connectionProvider.Connection());
+            _connectionProvider.Build(optionsBuilder);
         }
     }
 }

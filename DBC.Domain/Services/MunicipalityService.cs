@@ -1,6 +1,6 @@
 ﻿using DBC.Infrastructure.DataAccess;
 using DBC.Infrastructure.DataAccess.Repositories;
-using DBC.Infrastructure.Services;
+using DBC.Infrastructure.Domains;
 using DBC.Infrastructure.Utilities;
 using DBC.Models;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DBC.Domain.Services
 {
-    public class MunicipalityService : IMunicipalityService
+    public class MunicipalityService : IMunicipalityDomainLogic
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMunicipalityRepository _municipalityRepository;
@@ -25,16 +25,16 @@ namespace DBC.Domain.Services
             _taxCanculator = taxCanculator;
         }
 
-        public async Task<string> AddAsync(string name)
+        public async Task<(Municipality addedMunicipality, string error)> AddAsync(string name)
         {
             if (await _municipalityRepository.Exist(name))
-                return Messages.SameMunicipalityExist;
+                return (null, Messages.SameMunicipalityExist);
 
             var municipality = new Municipality { Name = name };
             _municipalityRepository.Add(municipality);
             await _unitOfWork.CommitAsync();
 
-            return Messages.NewMunicipalityAdded;
+            return (municipality, null);
         }
 
         public async Task<Municipality> FindAsync(string name)
@@ -67,7 +67,7 @@ namespace DBC.Domain.Services
         {
             var municipality = await _municipalityRepository.GetWithDetails(municipalityName);
             if (municipality == null)
-                return (int.MinValue , Messages.NoMunicipalityWithNameExist);
+                return (int.MinValue, Messages.NoMunicipalityWithNameExist);
 
             if (municipality.TaxRules?.Any() != true)
                 return (int.MinValue, Messages.NoRuleForMunicipality);
@@ -81,6 +81,16 @@ namespace DBC.Domain.Services
         {
             var municipality = await _municipalityRepository.GetWithDetails(municipalityName);
             return municipality.TaxRules.OrderBy(t => t.Priority).ToList();
+        }
+
+        public async Task<List<Municipality>> GetMunicipalities()
+        {
+            return await _municipalityRepository.GetListAsync();
+        }
+
+        public async Task<bool> Exist(string name)
+        {
+            return await _municipalityRepository.Exist(name);
         }
     }
 }

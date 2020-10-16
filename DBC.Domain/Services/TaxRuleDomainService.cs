@@ -1,6 +1,6 @@
 ﻿using DBC.Infrastructure.DataAccess;
 using DBC.Infrastructure.DataAccess.Repositories;
-using DBC.Infrastructure.Services;
+using DBC.Infrastructure.Domains;
 using DBC.Models;
 using System;
 using System.Threading.Tasks;
