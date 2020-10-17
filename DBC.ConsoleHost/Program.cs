@@ -11,7 +11,7 @@ namespace DBC.ConsoleHost
             var provider = Startup.GetProvider();
             Startup.EnsureDatabaseExistance(provider);
 
-            var MunicipalityTaxHost = new IocServiceHost(provider, typeof(MunicipalityTaxService));
+            var MunicipalityTaxHost = new IocServiceHost(provider, typeof(MunicipalityTaxManager));
             MunicipalityTaxHost.Open();
 
             Console.WriteLine("The host is listening on http://localhost:8733/Design_Time_Addresses/MunicipalityTaxs/");

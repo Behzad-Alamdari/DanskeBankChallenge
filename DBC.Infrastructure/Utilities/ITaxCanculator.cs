@@ -5,6 +5,6 @@ namespace DBC.Infrastructure.Utilities
 {
     public interface ITaxCanculator
     {
-        float CalculateTaxFor(Municipality municipality, DateTime date);
+        (float, string) CalculateTaxFor(Municipality municipality, DateTime date);
     }
 }

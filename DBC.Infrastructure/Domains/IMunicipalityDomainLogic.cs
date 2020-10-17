@@ -9,10 +9,10 @@ namespace DBC.Infrastructure.Domains
     {
         Task<bool> Exist(string name);
         Task<(Municipality addedMunicipality, string error)> AddAsync(string name);
-        Task<string> AddTaxRule(string municipalityName, TaxRule taxRule);
-        Task<(float percentage, string message)> FindApplicableTax(string municipalityName, DateTime date);
+        Task<(Municipality editedMunicipality, string error)> EditAsync(Guid id, string newName);
+        Task<(float percentage, string message)> FindApplicableTax(Guid municipalityId, DateTime date);
         Task<Municipality> FindAsync(string name);
         Task<List<Municipality>> GetMunicipalities();
-        Task<List<TaxRule>> FindMunicipalityTaxRules(string municipalityName);
+        Task<List<TaxRule>> FindMunicipalityTaxRules(Guid municipalityId);
     }
 }

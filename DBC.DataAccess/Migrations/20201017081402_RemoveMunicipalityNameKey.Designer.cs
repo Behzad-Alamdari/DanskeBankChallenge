@@ -4,14 +4,16 @@ using DBC.DataAccess.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DBC.DataAccess.Migrations
 {
     [DbContext(typeof(DansBankDbContext))]
-    partial class DansBankDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201017081402_RemoveMunicipalityNameKey")]
+    partial class RemoveMunicipalityNameKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

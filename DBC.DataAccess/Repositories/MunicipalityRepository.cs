@@ -50,12 +50,11 @@ namespace DBC.DataAccess.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task<Municipality> GetWithDetails(string municipalityName)
+        public async Task<Municipality> GetWithDetails(Guid municipalityId)
         {
-            municipalityName = municipalityName?.ToLower();
             return await Context.Municipalities
                 .Include(m => m.TaxRules).ThenInclude(t => t.Periods)
-                .FirstOrDefaultAsync(m => m.Name.ToLower() == municipalityName);
+                .FirstOrDefaultAsync(m => m.Id == municipalityId);
         }
     }
 }

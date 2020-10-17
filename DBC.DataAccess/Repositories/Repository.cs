@@ -33,6 +33,28 @@ namespace DBC.DataAccess.Repositories
             return entity.Id;
         }
 
+        public void Delete(T entity)
+        {
+            Context.Set<T>().Remove(entity);
+        }
+
+        public void Edit(T entity)
+        {
+            // Entity is added to context
+            Context.Set<T>().Update(entity);
+        }
+
+        public async Task<bool> Exist(Guid id)
+        {
+            return await Context.Set<T>().AnyAsync(e => e.Id == id);
+        }
+
+        public async Task<T> GetAsNoTrackingAsync(Guid id)
+        {
+            // Finds an entity with the given primary key values.
+            return await Context.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
+        }
+
         public async Task<T> GetAsync(Guid id)
         {
             // Finds an entity with the given primary key values.

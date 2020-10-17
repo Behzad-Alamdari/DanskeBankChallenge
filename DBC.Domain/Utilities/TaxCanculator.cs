@@ -7,7 +7,7 @@ namespace DBC.Domain.Utilities
 {
     public class TaxCanculator : ITaxCanculator
     {
-        public float CalculateTaxFor(Municipality municipality, DateTime date)
+        public (float, string) CalculateTaxFor(Municipality municipality, DateTime date)
         {
             var rules = municipality.TaxRules
                 .OrderByDescending(t => t.Priority);
@@ -22,11 +22,11 @@ namespace DBC.Domain.Utilities
                 foreach (var period in rule.Periods)
                 {
                     if (period.From.Date <= taxDate && period.To.Date.AddDays(1) > taxDate)
-                        return rule.Percentage;
+                        return (rule.Percentage, null);
                 }
             }
 
-            return -1;
+            return (int.MinValue, Messages.NoTaxRuleForDate);
         }
     }
 }

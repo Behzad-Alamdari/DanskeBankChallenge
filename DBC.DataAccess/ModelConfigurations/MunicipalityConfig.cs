@@ -9,9 +9,6 @@ namespace DBC.DataAccess.ModelConfigurations
         public void Configure(EntityTypeBuilder<Municipality> builder)
         {
             builder
-                .HasAlternateKey(m => m.Name);
-
-            builder
                 .HasMany(m => m.TaxRules)
                 .WithOne(t => t.Municipality)
                 .HasForeignKey(f => f.MunicipalityId)

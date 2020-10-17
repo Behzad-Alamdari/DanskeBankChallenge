@@ -10,6 +10,10 @@ namespace DBC.Contracts.ServiceContracts
     public interface IMunicipalityTaxService
     {
         [OperationContract]
+        Task<MunicipalityVw> EditMunicipalityAsync(Guid id, string newName);
+
+
+        [OperationContract]
         Task<MunicipalityVw> AddMunicipalityAsync(string name);
 
 
@@ -18,19 +22,15 @@ namespace DBC.Contracts.ServiceContracts
 
 
         [OperationContract]
-        Task<List<MunicipalityVw>> AddMunicipalitiesAsync();
+        Task<List<MunicipalityVw>> GetMunicipalitiesAsync();
 
 
         [OperationContract]
-        Task<string> AddTaxRuleAsync(string forMunicipality, TaxRuleDto rule);
+        Task<float> FindApplicableTaxAsync(Guid municipalityId, DateTime date);
 
 
         [OperationContract]
-        Task<float> FindApplicableTaxAsync(string municipalityName, DateTime date);
-
-
-        [OperationContract]
-        Task<List<TaxRuleVw>> FindMunicipalityTaxRulesAsync(string municipalityName);
+        Task<List<TaxRuleVw>> FindMunicipalityTaxRulesAsync(Guid municipalityId);
 
     }
 }

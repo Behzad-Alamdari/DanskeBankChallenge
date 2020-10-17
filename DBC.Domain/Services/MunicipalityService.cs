@@ -44,42 +44,23 @@ namespace DBC.Domain.Services
             return await _municipalityRepository.GetAsync(m => m.Name.ToLower() == name);
         }
 
-        public async Task<string> AddTaxRule(string municipalityName, TaxRule taxRule)
+        public async Task<(float percentage, string message)> FindApplicableTax(Guid municipalityId, DateTime date)
         {
-            if (taxRule.Periods?.Any() != true)
-                return Messages.TaxRuleMustHavePeriod;
-
-            var municipality = await _municipalityRepository.GetWithDetails(municipalityName);
-            if (municipality == null)
-                return Messages.NoMunicipalityWithNameExist;
-
-            if (municipality.TaxRules == null)
-                municipality.TaxRules = new List<TaxRule>();
-
-            municipality.TaxRules.Add(taxRule);
-
-            await _unitOfWork.CommitAsync();
-
-            return Messages.TaxRuleAdded;
-        }
-
-        public async Task<(float percentage, string message)> FindApplicableTax(string municipalityName, DateTime date)
-        {
-            var municipality = await _municipalityRepository.GetWithDetails(municipalityName);
+            var municipality = await _municipalityRepository.GetWithDetails(municipalityId);
             if (municipality == null)
                 return (int.MinValue, Messages.NoMunicipalityWithNameExist);
 
             if (municipality.TaxRules?.Any() != true)
                 return (int.MinValue, Messages.NoRuleForMunicipality);
 
-            var tax = _taxCanculator.CalculateTaxFor(municipality, date);
+            var (tax, error) = _taxCanculator.CalculateTaxFor(municipality, date);
 
-            return (tax, string.Empty);
+            return (tax, error);
         }
 
-        public async Task<List<TaxRule>> FindMunicipalityTaxRules(string municipalityName)
+        public async Task<List<TaxRule>> FindMunicipalityTaxRules(Guid municipalityId)
         {
-            var municipality = await _municipalityRepository.GetWithDetails(municipalityName);
+            var municipality = await _municipalityRepository.GetWithDetails(municipalityId);
             return municipality.TaxRules.OrderBy(t => t.Priority).ToList();
         }
 
@@ -91,6 +72,20 @@ namespace DBC.Domain.Services
         public async Task<bool> Exist(string name)
         {
             return await _municipalityRepository.Exist(name);
+        }
+
+        public async Task<(Municipality editedMunicipality, string error)> EditAsync(Guid id, string newName)
+        {
+            if (await _municipalityRepository.Exist(newName))
+                return (null, Messages.SameMunicipalityExist);
+
+            var municipality = await _municipalityRepository.GetAsync(id);
+            municipality.Name = newName;
+
+            await _unitOfWork.CommitAsync();
+
+
+            return (municipality, null);
         }
     }
 }

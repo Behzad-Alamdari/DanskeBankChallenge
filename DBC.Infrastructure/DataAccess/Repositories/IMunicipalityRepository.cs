@@ -18,9 +18,9 @@ namespace DBC.Infrastructure.DataAccess.Repositories
         /// <summary>
         /// Select the municipality along with tax rules and their periods
         /// </summary>
-        /// <param name="municipalityName">The municipality name</param>
+        /// <param name="municipalityId">The municipality Id</param>
         /// <returns>Municipality with tax rule and their periods</returns>
-        Task<Municipality> GetWithDetails(string municipalityName);
+        Task<Municipality> GetWithDetails(Guid municipalityId);
 
         /// <summary>
         /// Asynchronously selects a list of entities from database as tracking.

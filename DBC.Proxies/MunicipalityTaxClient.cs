@@ -9,9 +9,9 @@ namespace DBC.Proxies
 {
     public class MunicipalityTaxClient : ClientBase<IMunicipalityTaxService>, IMunicipalityTaxService
     {
-        public Task<List<MunicipalityVw>> AddMunicipalitiesAsync()
+        public Task<List<MunicipalityVw>> GetMunicipalitiesAsync()
         {
-            return Channel.AddMunicipalitiesAsync();
+            return Channel.GetMunicipalitiesAsync();
         }
 
         public Task<MunicipalityVw> AddMunicipalityAsync(string name)
@@ -19,24 +19,24 @@ namespace DBC.Proxies
             return Channel.AddMunicipalityAsync(name);
         }
 
-        public Task<string> AddTaxRuleAsync(string forMunicipality, TaxRuleDto rule)
-        {
-            return Channel.AddTaxRuleAsync(forMunicipality, rule);
-        }
-
         public Task<bool> DoesMunicipalityExistAsync(string name)
         {
             return Channel.DoesMunicipalityExistAsync(name);
         }
 
-        public Task<float> FindApplicableTaxAsync(string municipalityName, DateTime date)
+        public Task<MunicipalityVw> EditMunicipalityAsync(Guid id, string newName)
         {
-            return Channel.FindApplicableTaxAsync(municipalityName, date);
+            return Channel.EditMunicipalityAsync(id, newName);
         }
 
-        public Task<List<TaxRuleVw>> FindMunicipalityTaxRulesAsync(string municipalityName)
+        public Task<float> FindApplicableTaxAsync(Guid municipalityId, DateTime date)
         {
-            return Channel.FindMunicipalityTaxRulesAsync(municipalityName);
+            return Channel.FindApplicableTaxAsync(municipalityId, date);
+        }
+
+        public Task<List<TaxRuleVw>> FindMunicipalityTaxRulesAsync(Guid municipalityId)
+        {
+            return Channel.FindMunicipalityTaxRulesAsync(municipalityId);
         }
     }
 }

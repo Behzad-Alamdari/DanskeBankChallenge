@@ -15,6 +15,7 @@ namespace DBC.Domain
 
             services.AddScoped<IMunicipalityDomainLogic, MunicipalityService>();
             services.AddScoped<ITaxRuleDomainService, TaxRuleDomainService>();
+            services.AddScoped<ITaxRulePeriodDomainService, TaxRulePeriodDomainService>();
             services.AddTransient<ITaxCanculator, TaxCanculator>();
         }
     }

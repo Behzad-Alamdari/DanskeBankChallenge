@@ -88,6 +88,15 @@ namespace DBC.Models {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No tax rule has been found for the given date.
+        /// </summary>
+        public static string NoTaxRuleForDate {
+            get {
+                return ResourceManager.GetString("NoTaxRuleForDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A municipality with the same name already exists.
         /// </summary>
         public static string SameMunicipalityExist {
@@ -102,6 +111,15 @@ namespace DBC.Models {
         public static string TaxRuleAdded {
             get {
                 return ResourceManager.GetString("TaxRuleAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The tax rule id does not exist in the database.
+        /// </summary>
+        public static string TaxRuleDoesNotExist {
+            get {
+                return ResourceManager.GetString("TaxRuleDoesNotExist", resourceCulture);
             }
         }
         

@@ -48,7 +48,7 @@ namespace Test.DBC.DataAccess
             var taxRuleRepository = new TaxRuleRepository(new DansBankDbContext(fackDatabaseBuilder));
 
             // Act
-            var taxRule = await taxRuleRepository.GetWithDetails(trId);
+            var taxRule = await taxRuleRepository.GetWithDetailsAsync(trId);
 
             // Assert
             taxRule.Should().NotBeNull();

@@ -7,8 +7,9 @@ namespace DBC.WcfServices
     {
         public static void AddWcfServices(this IServiceCollection services)
         {
-            services.AddTransient<IMunicipalityTaxService, MunicipalityTaxService>();
-            services.AddTransient<IMunicipalityTaxRuleService, MunicipalityTaxRuleService>();
+            services.AddTransient<IMunicipalityTaxService, MunicipalityTaxManager>();
+            services.AddTransient<IMunicipalityTaxRuleService, MunicipalityTaxManager>();
+            services.AddTransient<ITaxRulePeriodService, MunicipalityTaxManager>();
         }
     }
 }

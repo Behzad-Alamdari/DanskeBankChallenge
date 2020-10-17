@@ -14,6 +14,7 @@ namespace DBC.DataAccess
 
             services.AddScoped<IMunicipalityRepository, MunicipalityRepository>();
             services.AddScoped<ITaxRuleRepository, TaxRuleRepository>();
+            services.AddScoped<ITaxRulePeriodRepository, TaxRulePeriodRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
     }

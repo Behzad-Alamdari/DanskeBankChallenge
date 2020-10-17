@@ -3,40 +3,215 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:DBC.WpfClient"
+        xmlns:local="clr-namespace:DBC.WpfClient.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800" Loaded="Window_LoadedAsync"
         Name="mainWindow">
-
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <local:NegateBooleanToVisibilityConverter x:Key="NegateBooleanToVisibilityConverter"/>
+        <local:NegateBooleanConverter x:Key="NegateBooleanConverter"/>
+    </Window.Resources>
     <Grid>
+        <Grid.Resources>
+            <Style TargetType="{x:Type TextBox}">
+                <Setter Property="Margin" Value="2" />
+            </Style>
+            <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Margin" Value="2" />
+            </Style>
+            <Style TargetType="{x:Type Button}">
+                <Setter Property="Margin" Value="2" />
+            </Style>
+            <Style TargetType="{x:Type DataGrid}">
+                <Setter Property="Margin" Value="2" />
+            </Style>
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Municipalities"></TextBlock>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="New Municipality Name:"></TextBlock>
-        <TextBox x:Name="txtNewMunicipalityName" Grid.Row="1" Grid.Column="1" Text="{Binding NewMunicipalityName}"/>
-        <Button Grid.Row="1" Grid.Column="2" Content="Add" Click="btnAdd_ClickAsync"/>
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Municipalities" FontSize="18"></TextBlock>
 
-        <DataGrid x:Name="grdMunicipalites" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" 
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="New Municipality Name:"></TextBlock>
+            <TextBox x:Name="txtNewMunicipalityName" Grid.Row="1" Grid.Column="1" Text="{Binding NewMunicipalityName}"/>
+            <Button Grid.Row="1" Grid.Column="2" Content="Add" Click="btnAdd_ClickAsync"/>
+
+            <DataGrid x:Name="grdMunicipalites" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" 
                   AutoGenerateColumns="False" CanUserAddRows="False" 
-                  ItemsSource="{Binding Path=Municipalities}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Path=Name}" Header="Municipality Name" Width="1*"/>
-            </DataGrid.Columns>
-        </DataGrid>
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Selected Municipality Name:"></TextBlock>
-        <TextBox  Grid.Row="3" Grid.Column="1" Text="{Binding SelectedMunicipalityName}"/>
-        <Button Grid.Row="3" Grid.Column="2" Content="Edit"/>
+                  ItemsSource="{Binding Path=Municipalities}" SelectedItem="{Binding Path=SelectedMunicipality}" IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Path=Name}" Header="Municipality Name" Width="1*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="Selected Municipality Name:"></TextBlock>
+            <TextBox  Grid.Row="3" Grid.Column="1" Text="{Binding EditedMunicipalityName}"/>
+            <Button x:Name="btnMunicipalityEdit" Grid.Row="3" Grid.Column="2" Content="Edit" Click="btnMunicipalityEdit_ClickAsync"/>
+
+        </Grid>
+
+        <Grid Grid.Row="0" Grid.Column="1"  IsEnabled="{Binding Path=IsMunicipalitySelected}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding Path=TaxRuleTitle}" FontSize="18"></TextBlock>
+
+                <DataGrid x:Name="grdMunicipalityTaxRules" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" 
+                  AutoGenerateColumns="False" CanUserAddRows="False" 
+                  ItemsSource="{Binding Path=MunicipalityTaxRules}" SelectedItem="{Binding Path=SelectedTaxRule}" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Path=Name}" Header="Name" Width="1*"/>
+                        <DataGridTextColumn Binding="{Binding Path=Priority}" Header="Priority" Width="auto"/>
+                        <DataGridTextColumn Binding="{Binding Path=Percentage}" Header="Percentage" Width="auto"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Tax Rule Name:"></TextBlock>
+                <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=TaxRuleName}"
+                       Visibility="{Binding IsTaxRuleReadOnly, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=TaxRuleName}"
+                       Visibility="{Binding Path=IsTaxRuleReadOnly, Converter={StaticResource NegateBooleanToVisibilityConverter}}"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Tax Rule Percentage:"></TextBlock>
+                <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=TaxRulePercentage}"
+                       Visibility="{Binding IsTaxRuleReadOnly, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=TaxRulePercentage}"
+                       Visibility="{Binding Path=IsTaxRuleReadOnly, Converter={StaticResource NegateBooleanToVisibilityConverter}}"/>
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Tax Rule Priority:"></TextBlock>
+                <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding Path=TaxRulePriority}"
+                       Visibility="{Binding IsTaxRuleReadOnly, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=TaxRulePriority}"
+                       Visibility="{Binding Path=IsTaxRuleReadOnly, Converter={StaticResource NegateBooleanToVisibilityConverter}}"/>
+
+                <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Visibility="{Binding IsTaxRuleReadOnly, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Button x:Name="btnAddTaxRule" Content="Add" Click="btnAddTaxRule_Click"/>
+                    <Button x:Name="btnEditTaxRule" Content="Edit" Click="btnEditTaxRule_Click"
+                            IsEnabled="{Binding Path=IsTaxRuleSelected}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Visibility="{Binding IsTaxRuleReadOnly, Converter={StaticResource NegateBooleanToVisibilityConverter}}">
+                    <Button x:Name="btnSaveTaxRule" Content="Save" Click="btnSaveTaxRule_ClickAsync"/>
+                    <Button x:Name="btnCancelTaxRule" Content="Cancel" Click="btnCancelTaxRule_Click" />
+                </StackPanel>
+
+            </Grid>
+
+            <Grid Grid.Row="0" Grid.Column="1" IsEnabled="{Binding IsTaxRuleSelected}">               
+                
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Path=PeriodTitle}" FontSize="18"></TextBlock>
+
+                <DataGrid x:Name="grdTaxRulePeriods" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
+                  AutoGenerateColumns="False" CanUserAddRows="False" 
+                  ItemsSource="{Binding Path=TaxRulePeriods}" SelectedItem="{Binding Path=SelectedPeriod}" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Path=From}" Header="From" Width="1*"/>
+                        <DataGridTextColumn Binding="{Binding Path=To}" Header="To" Width="1*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Period Start:"></TextBlock>
+                <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=PeriodFrom}"
+                       Visibility="{Binding IsPeriodReadOnly, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <DatePicker Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" SelectedDate="{Binding Path=PeriodFrom}"
+                       Visibility="{Binding Path=IsPeriodReadOnly, Converter={StaticResource NegateBooleanToVisibilityConverter}}"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Period End:"></TextBlock>
+                <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=PeriodTo}"
+                       Visibility="{Binding IsPeriodReadOnly, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                <DatePicker Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" SelectedDate="{Binding Path=PeriodTo}"
+                       Visibility="{Binding Path=IsPeriodReadOnly, Converter={StaticResource NegateBooleanToVisibilityConverter}}"/>
+
+                <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Visibility="{Binding IsPeriodReadOnly, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Button x:Name="btnAddPeriod" Content="Add" Click="btnAddPeriod_Click"/>
+                    <Button x:Name="btnEditPeriod" Content="Edit" Click="btnEditPeriod_Click"
+                            IsEnabled="{Binding Path=IsPeriodSelected}"/>
+                    <Button x:Name="btnDeletePeriod" Content="Delete" Click="btnDeletePeriod_ClickAsync"
+                            IsEnabled="{Binding Path=IsPeriodSelected}" Foreground="Red"/>
+                </StackPanel>
+                <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Visibility="{Binding IsPeriodReadOnly, Converter={StaticResource NegateBooleanToVisibilityConverter}}">
+                    <Button x:Name="btnSavePeriod" Content="Save" Click="btnSavePeriod_ClickAsync"/>
+                    <Button x:Name="btnCancelPeriod" Content="Cancel" Click="btnCancelPeriod_Click" />
+                </StackPanel>
+
+            </Grid>
+
+            <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" FontSize="18" TextAlignment="Justify"
+                           Text="To find out how much is the tax in the selected municipality, select a date and press 'Find'" 
+                           TextWrapping="Wrap"></TextBlock>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Target Date:"/>
+                <DatePicker Grid.Row="1" Grid.Column="1" SelectedDate="{Binding Path=SelectedDate}" />
+                <Button x:Name="btnFindTax" Grid.Row="1" Grid.Column="2" Content="Find" Click="btnFindTax_ClickAsync"/>
+                <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center"
+                           VerticalAlignment="Center" Text="{Binding Path=SelectedPercentage}"
+                           FontSize="48"/>
+            </Grid>
+            
+        </Grid>
     </Grid>
+
 </Window>
