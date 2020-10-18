@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DBC.Models;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading;
@@ -23,9 +24,10 @@ namespace DBC.DataAccess.EntityFramework
                 {
                     if (!(await db.Database.CanConnectAsync()))
                     {
-                        Console.WriteLine("Database is been created, please be patient. You will be notify when it is done");
                         await db.Database.EnsureCreatedAsync();
-                        Console.WriteLine("Database is been created");
+
+                        db.Municipalities.AddRange(SeedDataGenerator.Generate());
+                        db.SaveChanges();
                     }
 
                 }

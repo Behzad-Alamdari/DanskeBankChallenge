@@ -2,6 +2,7 @@
 using DBC.Domain;
 using DBC.Infrastructure.AutoMapperConfigs;
 using DBC.Infrastructure.DataAccess;
+using DBC.Models;
 using DBC.WcfServices;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -32,6 +33,10 @@ namespace DBC.ConsoleHost
                 {
                     Console.WriteLine("Database is been created, please be patient. You will be notify when it is done");
                     db.Database.EnsureCreated();
+
+                    db.Municipalities.AddRange(SeedDataGenerator.Generate());
+                    db.SaveChanges();
+
                     Console.WriteLine("Database is been created");
                 }
 

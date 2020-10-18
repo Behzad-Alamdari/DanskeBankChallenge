@@ -2,6 +2,7 @@
 using DBC.Domain;
 using DBC.Infrastructure.AutoMapperConfigs;
 using DBC.Infrastructure.DataAccess;
+using DBC.Models;
 using DBC.WcfServices;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -31,6 +32,9 @@ namespace DBC.WindowsServiceHost
                 if (!db.Database.CanConnect())
                 {                   
                     db.Database.EnsureCreated();
+
+                    db.Municipalities.AddRange(SeedDataGenerator.Generate());
+                    db.SaveChanges();
                 }
 
             }

@@ -1,11 +1,7 @@
 ﻿using DBC.DataAccess.EntityFramework;
+using DBC.Models;
 using DBC.WebHost.Helpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Security;
-using System.Web.SessionState;
 
 namespace DBC.WebHost
 {
@@ -21,6 +17,10 @@ namespace DBC.WebHost
                 {
                     Console.WriteLine("Database is been created, please be patient. You will be notify when it is done");
                     db.Database.EnsureCreated();
+
+                    db.Municipalities.AddRange(SeedDataGenerator.Generate());
+                    db.SaveChanges();
+
                     Console.WriteLine("Database is been created");
                 }
             }

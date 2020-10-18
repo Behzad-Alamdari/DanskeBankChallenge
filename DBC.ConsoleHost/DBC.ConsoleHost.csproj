@@ -224,6 +224,10 @@
       <Project>{51ee9213-4608-4f18-a9de-883c40273ed9}</Project>
       <Name>DBC.Infrastructure</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DBC.Models\DBC.Models.csproj">
+      <Project>{642486FE-751A-4DE6-9508-FBB05ED1F52A}</Project>
+      <Name>DBC.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DBC.WcfServices\DBC.WcfServices.csproj">
       <Project>{a21008a5-b5a9-4127-a9bf-d4d140dc29ec}</Project>
       <Name>DBC.WcfServices</Name>
