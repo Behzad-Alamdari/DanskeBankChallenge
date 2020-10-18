@@ -3,18 +3,36 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace DBC.Infrastructure.AutoMapperConfigs
 {
     public class AutoMapperConfig
     {
-        public static MapperConfiguration InitializeAutoMapper()
+        public static MapperConfiguration InitializeAutoMapperForWcf()
         {
             var types = new List<Type>();
             types.AddRange(Assembly.Load(new AssemblyName("DBC.Contracts"))
                 .GetExportedTypes()
                 .Where(t => !t.GetTypeInfo().IsInterface)
                 .ToList());
+
+            return Configure(types);
+        }
+
+        public static MapperConfiguration InitializeAutoMapperForApi()
+        {
+            var types = new List<Type>();
+            types.AddRange(Assembly.Load(new AssemblyName("DBC.WebApi"))
+                .GetExportedTypes()
+                .Where(t => !t.GetTypeInfo().IsInterface)
+                .ToList());
+
+            return Configure(types);
+        }
+
+        private static MapperConfiguration Configure(List<Type> types)
+        {
 
             var config = new MapperConfiguration(cfg =>
             {
@@ -25,6 +43,7 @@ namespace DBC.Infrastructure.AutoMapperConfigs
             });
             config.AssertConfigurationIsValid();
             return config;
+
         }
 
         private static void LoadCustomMappings(IEnumerable<Type> types, IMapperConfigurationExpression cfg)

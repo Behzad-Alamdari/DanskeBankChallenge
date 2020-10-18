@@ -70,11 +70,11 @@ namespace DBC.Models {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No municipality with the given name exists.
+        ///   Looks up a localized string similar to No municipality with the given Id exists.
         /// </summary>
-        public static string NoMunicipalityWithNameExist {
+        public static string NoMunicipalityWithIdExist {
             get {
-                return ResourceManager.GetString("NoMunicipalityWithNameExist", resourceCulture);
+                return ResourceManager.GetString("NoMunicipalityWithIdExist", resourceCulture);
             }
         }
         

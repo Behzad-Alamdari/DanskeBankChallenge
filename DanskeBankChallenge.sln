@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBC.WpfClient", "DBC.WpfCli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBC.WindowsServiceHost", "DBC.WindowsServiceHost\DBC.WindowsServiceHost.csproj", "{0A53D8FE-1ADC-423D-9FE4-5678B4B8C7B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBC.WebApi", "DBC.WebApi\DBC.WebApi.csproj", "{2445E37E-9CE7-4757-A70E-843AA3B48FD4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -91,6 +93,10 @@ Global
 		{0A53D8FE-1ADC-423D-9FE4-5678B4B8C7B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A53D8FE-1ADC-423D-9FE4-5678B4B8C7B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A53D8FE-1ADC-423D-9FE4-5678B4B8C7B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2445E37E-9CE7-4757-A70E-843AA3B48FD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2445E37E-9CE7-4757-A70E-843AA3B48FD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2445E37E-9CE7-4757-A70E-843AA3B48FD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2445E37E-9CE7-4757-A70E-843AA3B48FD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

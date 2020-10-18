@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace DBC.Domain.Services
@@ -37,18 +38,16 @@ namespace DBC.Domain.Services
             return (municipality, null);
         }
 
-        public async Task<Municipality> FindAsync(string name)
+        public async Task<Municipality> GetAsync(Guid id)
         {
-            // Sqlite is case sensitive
-            name = name.ToLower();
-            return await _municipalityRepository.GetAsync(m => m.Name.ToLower() == name);
+            return await _municipalityRepository.GetAsync(m => m.Id == id);
         }
 
         public async Task<(float percentage, string message)> FindApplicableTax(Guid municipalityId, DateTime date)
         {
             var municipality = await _municipalityRepository.GetWithDetails(municipalityId);
             if (municipality == null)
-                return (int.MinValue, Messages.NoMunicipalityWithNameExist);
+                return (int.MinValue, Messages.NoMunicipalityWithIdExist);
 
             if (municipality.TaxRules?.Any() != true)
                 return (int.MinValue, Messages.NoRuleForMunicipality);
@@ -64,9 +63,9 @@ namespace DBC.Domain.Services
             return municipality.TaxRules.OrderBy(t => t.Priority).ToList();
         }
 
-        public async Task<List<Municipality>> GetMunicipalities()
+        public async Task<(List<Municipality>, int)> GetMunicipalities(Pagination pagination = null)
         {
-            return await _municipalityRepository.GetListAsync();
+            return await _municipalityRepository.GetListAsync(pagination);
         }
 
         public async Task<bool> Exist(string name)
@@ -86,6 +85,19 @@ namespace DBC.Domain.Services
 
 
             return (municipality, null);
+        }
+
+        public async Task<string> DeleteAsync(Guid id)
+        {
+            var municipality =await _municipalityRepository.GetAsync(id);
+            if (municipality == null)
+                return Messages.NoMunicipalityWithIdExist;
+
+            _municipalityRepository.Delete(municipality);
+
+            await _unitOfWork.CommitAsync();
+
+            return null;
         }
     }
 }

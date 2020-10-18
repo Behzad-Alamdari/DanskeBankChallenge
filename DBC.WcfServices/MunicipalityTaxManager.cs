@@ -68,7 +68,7 @@ namespace DBC.WcfServices
 
         public async Task<List<MunicipalityVw>> GetMunicipalitiesAsync()
         {
-            var municipalites = await _municipalityService.GetMunicipalities();
+            var (municipalites, totalCount) = await _municipalityService.GetMunicipalities();
             return _mapper.Map<List<MunicipalityVw>>(municipalites);
         }
 

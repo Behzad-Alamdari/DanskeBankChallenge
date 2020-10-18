@@ -18,7 +18,7 @@ namespace DBC.WindowsServiceHost
             services.AddWcfServices();
 
             // AutoMapper
-            var mapper = AutoMapperConfig.InitializeAutoMapper().CreateMapper();
+            var mapper = AutoMapperConfig.InitializeAutoMapperForWcf().CreateMapper();
             services.AddSingleton(mapper);
 
             return services.BuildServiceProvider();

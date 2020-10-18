@@ -12,6 +12,7 @@
         <local:NegateBooleanToVisibilityConverter x:Key="NegateBooleanToVisibilityConverter"/>
         <local:NegateBooleanConverter x:Key="NegateBooleanConverter"/>
     </Window.Resources>
+
     <Grid>
         <Grid.Resources>
             <Style TargetType="{x:Type TextBox}">
@@ -134,8 +135,8 @@
 
             </Grid>
 
-            <Grid Grid.Row="0" Grid.Column="1" IsEnabled="{Binding IsTaxRuleSelected}">               
-                
+            <Grid Grid.Row="0" Grid.Column="1" IsEnabled="{Binding IsTaxRuleSelected}">
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="1*"/>
@@ -147,7 +148,7 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Path=PeriodTitle}" FontSize="18"></TextBlock>
 
                 <DataGrid x:Name="grdTaxRulePeriods" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" 
@@ -210,8 +211,8 @@
                            VerticalAlignment="Center" Text="{Binding Path=SelectedPercentage}"
                            FontSize="48"/>
             </Grid>
-            
+
         </Grid>
     </Grid>
-
+    
 </Window>

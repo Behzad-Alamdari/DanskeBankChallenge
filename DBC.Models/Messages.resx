@@ -120,8 +120,8 @@
   <data name="NewMunicipalityAdded" xml:space="preserve">
     <value>A new municipality added</value>
   </data>
-  <data name="NoMunicipalityWithNameExist" xml:space="preserve">
-    <value>No municipality with the given name exists</value>
+  <data name="NoMunicipalityWithIdExist" xml:space="preserve">
+    <value>No municipality with the given Id exists</value>
   </data>
   <data name="NoRuleForMunicipality" xml:space="preserve">
     <value>No rule is registered for this municipality</value>

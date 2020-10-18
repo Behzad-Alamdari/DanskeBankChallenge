@@ -11,8 +11,9 @@ namespace DBC.Infrastructure.Domains
         Task<(Municipality addedMunicipality, string error)> AddAsync(string name);
         Task<(Municipality editedMunicipality, string error)> EditAsync(Guid id, string newName);
         Task<(float percentage, string message)> FindApplicableTax(Guid municipalityId, DateTime date);
-        Task<Municipality> FindAsync(string name);
-        Task<List<Municipality>> GetMunicipalities();
+        Task<Municipality> GetAsync(Guid id);
+        Task<(List<Municipality> municipalities, int totalCount)> GetMunicipalities(Pagination pagination = null);
         Task<List<TaxRule>> FindMunicipalityTaxRules(Guid municipalityId);
+        Task<string> DeleteAsync(Guid id);
     }
 }

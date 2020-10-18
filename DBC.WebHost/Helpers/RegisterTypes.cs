@@ -15,7 +15,7 @@ namespace DBC.WebHost.Helpers
             container.AddWcfServices();
 
             // AutoMapper
-            var mapper = AutoMapperConfig.InitializeAutoMapper().CreateMapper();
+            var mapper = AutoMapperConfig.InitializeAutoMapperForWcf().CreateMapper();
             container.AddSingleton(mapper);
         }
     }

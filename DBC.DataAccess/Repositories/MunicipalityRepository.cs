@@ -25,7 +25,7 @@ namespace DBC.DataAccess.Repositories
                 .AnyAsync(m => m.Name.ToLower() == municipalityName);
         }
 
-        public async Task<List<Municipality>> GetListAsync(Pagination pagination = null,
+        public async Task<(List<Municipality> municipalities, int totalCount)> GetListAsync(Pagination pagination = null,
             Expression<Func<Municipality, bool>> predicate = null)
         {
             // Get Municipalities as IQueryable
@@ -33,21 +33,28 @@ namespace DBC.DataAccess.Repositories
 
             // This should not happen, but to satisfy null reference checking, we do this check
             if (query == null)
-                return new List<Municipality>();
+                return (new List<Municipality>(), 0);
 
             // If predicate is not null, the condition will be added to query
             if (predicate != null)
                 query = query.Where(predicate);
 
 
+            var municipalites = new List<Municipality>();
+            if (pagination == null)
+            {
+                municipalites = await query.ToListAsync();
+                return (municipalites, municipalites.Count);
+            }
+
             // If pagination is not null, they will be applied to query
-            if(pagination != null)
-            query = query
+            var totalCount = await query.CountAsync();
+            var municipalities = await query
                 .Skip((pagination.PageNumber - 1) * pagination.PageSize)
-                .Take(pagination.PageSize);
+                .Take(pagination.PageSize).ToListAsync();
 
             // Return the municipalities list
-            return await query.ToListAsync();
+            return (municipalities, totalCount);
         }
 
         public async Task<Municipality> GetWithDetails(Guid municipalityId)
