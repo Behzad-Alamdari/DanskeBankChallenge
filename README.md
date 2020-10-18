@@ -18,3 +18,12 @@ To add a new municipality, you need to send a POST request to this endpoint with
 > {
 >    "name": "New Municipality Name"
 > }
+
+# What Is The Logic
+Each municipality can have any number of tax rule and any of these tax rule might have any number of 
+periods. Name of a tax rule is not important, it is a free text, it can be anything.
+
+Each tax rule has a priority assigned to it, the higher the priority, the sooner it will be checked.
+It means when we are looking for a applicable tax for a specific date. All the municipality's tax rules 
+will be sorted according to their priority and then they will be checked one by one. The first one which
+cover the given date, wins.
