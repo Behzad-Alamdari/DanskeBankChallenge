@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -45,20 +46,28 @@ namespace DBC.WpfClient
                 return;
 
             var proxy = new MunicipalityTaxClient();
-            if (await proxy.DoesMunicipalityExistAsync(newName))
+            try
             {
-                MessageBox.Show("A municipality with the same name already exist!");
-                proxy.Close();
-                return;
+                if (await proxy.DoesMunicipalityExistAsync(newName))
+                {
+                    MessageBox.Show("A municipality with the same name already exist!");
+                    proxy.Close();
+                    return;
+                }
+
+                var municipality = await proxy.AddMunicipalityAsync(newName);
+                if (_vm.Municipalities == null)
+                    _vm.Municipalities = new ObservableCollection<MunicipalityVw>();
+
+                _vm.Municipalities.Add(municipality);
+
+                txtNewMunicipalityName.Text = null;
+
             }
-
-            var municipality = await proxy.AddMunicipalityAsync(newName);
-            if (_vm.Municipalities == null)
-                _vm.Municipalities = new ObservableCollection<MunicipalityVw>();
-
-            _vm.Municipalities.Add(municipality);
-
-            txtNewMunicipalityName.Text = null;
+            catch (FaultException<FaultHandle> ex)
+            {
+                MessageBox.Show(ex.Detail.Error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             proxy.Close();
         }
@@ -76,20 +85,27 @@ namespace DBC.WpfClient
             var newName = _vm.EditedMunicipalityName;
 
             var proxy = new MunicipalityTaxClient();
-            if (await proxy.DoesMunicipalityExistAsync(newName))
+            try
             {
-                MessageBox.Show("A municipality with the same name already exist!");
-                proxy.Close();
-                return;
+                if (await proxy.DoesMunicipalityExistAsync(newName))
+                {
+                    MessageBox.Show("A municipality with the same name already exist!");
+                    proxy.Close();
+                    return;
+                }
+
+
+                var municipality = await proxy.EditMunicipalityAsync(selectedMunicipality.Id, newName);
+
+                _vm.Municipalities.Remove(selectedMunicipality);
+                _vm.Municipalities.Add(municipality);
+
+                _vm.EditedMunicipalityName = string.Empty;
             }
-
-
-            var municipality = await proxy.EditMunicipalityAsync(selectedMunicipality.Id, newName);
-
-            _vm.Municipalities.Remove(selectedMunicipality);
-            _vm.Municipalities.Add(municipality);
-
-            _vm.EditedMunicipalityName = string.Empty;
+            catch (FaultException<FaultHandle> ex)
+            {
+                MessageBox.Show(ex.Detail.Error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             proxy.Close();
         }
@@ -133,20 +149,28 @@ namespace DBC.WpfClient
 
             var proxy = new MunicipalityTaxRuleClient();
 
-            TaxRuleVw taxRuleVw;
-            if (_vm.IsTaxRuleInEditMode)
+            try
             {
-                taxRuleVw = await proxy.EditTaxRuleAsync(_vm.SelectedTaxRule.Id, taxRule);
-                _vm.MunicipalityTaxRules.Remove(_vm.SelectedTaxRule);
-                _vm.MunicipalityTaxRules.Add(taxRuleVw);
+                TaxRuleVw taxRuleVw;
+                if (_vm.IsTaxRuleInEditMode)
+                {
+                    taxRuleVw = await proxy.EditTaxRuleAsync(_vm.SelectedTaxRule.Id, taxRule);
+                    _vm.MunicipalityTaxRules.Remove(_vm.SelectedTaxRule);
+                    _vm.MunicipalityTaxRules.Add(taxRuleVw);
+                }
+                else
+                {
+                    taxRuleVw = await proxy.AddTaxRuleAsync(_vm.SelectedMunicipality.Id, taxRule);
+                    _vm.MunicipalityTaxRules.Add(taxRuleVw);
+                }
+
+                _vm.SelectedTaxRule = taxRuleVw;
             }
-            else
+            catch (FaultException<FaultHandle> ex)
             {
-                taxRuleVw = await proxy.AddTaxRuleAsync(_vm.SelectedMunicipality.Id, taxRule);
-                _vm.MunicipalityTaxRules.Add(taxRuleVw);
+                MessageBox.Show(ex.Detail.Error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            _vm.SelectedTaxRule = taxRuleVw;
             _vm.IsTaxRuleReadOnly = true;
 
             proxy.Close();
@@ -190,20 +214,28 @@ namespace DBC.WpfClient
 
             var proxy = new TaxRulePeriodClient();
 
-            PeriodVw period;
-            if (_vm.IsPeriodInEditMode)
+            try
             {
-                period = await proxy.EditTaxRulePeriodAsync(_vm.SelectedPeriod.Id, periodDto);
-                _vm.TaxRulePeriods.Remove(_vm.SelectedPeriod);
-                _vm.TaxRulePeriods.Add(period);
+                PeriodVw period;
+                if (_vm.IsPeriodInEditMode)
+                {
+                    period = await proxy.EditTaxRulePeriodAsync(_vm.SelectedPeriod.Id, periodDto);
+                    _vm.TaxRulePeriods.Remove(_vm.SelectedPeriod);
+                    _vm.TaxRulePeriods.Add(period);
+                }
+                else
+                {
+                    period = await proxy.AddTaxRulePeriodAsync(_vm.SelectedTaxRule.Id, periodDto);
+                    _vm.TaxRulePeriods.Add(period);
+                }
+
+                _vm.SelectedPeriod = period;
             }
-            else
+            catch (FaultException<FaultHandle> ex)
             {
-                period = await proxy.AddTaxRulePeriodAsync(_vm.SelectedTaxRule.Id, periodDto);
-                _vm.TaxRulePeriods.Add(period);
+                MessageBox.Show(ex.Detail.Error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            _vm.SelectedPeriod = period;
             _vm.IsPeriodReadOnly = true;
 
             proxy.Close();
@@ -215,9 +247,15 @@ namespace DBC.WpfClient
 
             if (_vm.SelectedPeriod == null)
                 return;
-
-            await proxy.DeleteTaxRulePeriodAsync(_vm.SelectedPeriod.Id);
-            _vm.TaxRulePeriods.Remove(_vm.SelectedPeriod);
+            try
+            {
+                await proxy.DeleteTaxRulePeriodAsync(_vm.SelectedPeriod.Id);
+                _vm.TaxRulePeriods.Remove(_vm.SelectedPeriod);
+            }
+            catch (FaultException<FaultHandle> ex)
+            {
+                MessageBox.Show(ex.Detail.Error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             proxy.Close();
         }
@@ -235,8 +273,9 @@ namespace DBC.WpfClient
                 var percentage = await proxy.FindApplicableTaxAsync(_vm.SelectedMunicipality.Id, _vm.SelectedDate);
                 _vm.SelectedPercentage = $"{percentage} %";
             }
-            catch (Exception ex)
+            catch (FaultException<FaultHandle> ex)
             {
+                MessageBox.Show(ex.Detail.Error, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
 

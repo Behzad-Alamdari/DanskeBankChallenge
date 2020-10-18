@@ -16,6 +16,7 @@ namespace DBC.Contracts.ServiceContracts
 
 
         [OperationContract]
+        [FaultContract(typeof(FaultHandle))]
         Task<TaxRuleVw> EditTaxRuleAsync(Guid taxRuleId, TaxRuleDto rule);
 
 

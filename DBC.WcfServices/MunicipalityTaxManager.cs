@@ -10,8 +10,10 @@ using System.Threading.Tasks;
 
 namespace DBC.WcfServices
 {
-    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
-    public class MunicipalityTaxManager : IMunicipalityTaxService, IMunicipalityTaxRuleService, ITaxRulePeriodService
+    [ServiceBehavior(IncludeExceptionDetailInFaults = true, InstanceContextMode = InstanceContextMode.PerCall)]
+    [FaultExceptionHandler]
+    public class MunicipalityTaxManager : IMunicipalityTaxService, IMunicipalityTaxRuleService,
+        ITaxRulePeriodService
     {
         private readonly IMunicipalityDomainLogic _municipalityService;
         private readonly ITaxRuleDomainService _taxRuleDomainService;
@@ -35,11 +37,10 @@ namespace DBC.WcfServices
             return await _municipalityService.Exist(name);
         }
 
-        [FaultContract(typeof(FaultHandle))]
         public async Task<MunicipalityVw> AddMunicipalityAsync(string name)
         {
             var (municipality, error) = await _municipalityService.AddAsync(name);
-            if(!string.IsNullOrWhiteSpace(error))
+            if (!string.IsNullOrWhiteSpace(error))
             {
                 var fault = new FaultHandle(error);
                 throw new FaultException<FaultHandle>(fault);
@@ -48,7 +49,6 @@ namespace DBC.WcfServices
             return _mapper.Map<MunicipalityVw>(municipality);
         }
 
-        [FaultContract(typeof(FaultHandle))]
         public async Task<float> FindApplicableTaxAsync(Guid municipalityId, DateTime date)
         {
             var (percentage, message) = await _municipalityService.FindApplicableTax(municipalityId, date);
@@ -72,7 +72,6 @@ namespace DBC.WcfServices
             return _mapper.Map<List<MunicipalityVw>>(municipalites);
         }
 
-        [FaultContract(typeof(FaultHandle))]
         public async Task<MunicipalityVw> EditMunicipalityAsync(Guid id, string newName)
         {
             var (municipality, error) = await _municipalityService.EditAsync(id, newName);
@@ -95,7 +94,6 @@ namespace DBC.WcfServices
             return _mapper.Map<TaxRuleVw>(taxRule);
         }
 
-        [FaultContract(typeof(FaultHandle))]
         public async Task<TaxRuleVw> EditTaxRuleAsync(Guid taxRuleId, TaxRuleDto rule)
         {
             var taxRule = _mapper.Map<TaxRule>(rule);
@@ -110,7 +108,6 @@ namespace DBC.WcfServices
             return _mapper.Map<TaxRuleVw>(taxRule);
         }
 
-        
         public async Task<List<PeriodVw>> GetPeriodsAsync(Guid taxRuleId)
         {
             var periods = await _taxRuleDomainService.GetTaxRulePeriodsAsync(taxRuleId);
@@ -121,7 +118,6 @@ namespace DBC.WcfServices
 
         #region ITaxRulePeriodService
 
-        [FaultContract(typeof(FaultHandle))]
         public async Task<PeriodVw> AddTaxRulePeriodAsync(Guid taxRuleId, PeriodDto period)
         {
             var p = _mapper.Map<Period>(period);
@@ -136,7 +132,6 @@ namespace DBC.WcfServices
             return _mapper.Map<PeriodVw>(addedPeriod);
         }
 
-        [FaultContract(typeof(FaultHandle))]
         public async Task<PeriodVw> EditTaxRulePeriodAsync(Guid taxRulePeriodId, PeriodDto period)
         {
             var p = _mapper.Map<Period>(period);
@@ -151,7 +146,6 @@ namespace DBC.WcfServices
             return _mapper.Map<PeriodVw>(editedPeriod);
         }
 
-        [FaultContract(typeof(FaultHandle))]
         public async Task DeleteTaxRulePeriodAsync(Guid taxRulePeriodId)
         {
             var error = await _taxRulePeriodDomainService.DeletePeriod(taxRulePeriodId);
@@ -165,5 +159,6 @@ namespace DBC.WcfServices
         }
 
         #endregion
+
     }
 }

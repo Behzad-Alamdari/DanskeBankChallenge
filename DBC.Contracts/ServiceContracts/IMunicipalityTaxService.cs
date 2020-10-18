@@ -10,10 +10,12 @@ namespace DBC.Contracts.ServiceContracts
     public interface IMunicipalityTaxService
     {
         [OperationContract]
+        [FaultContract(typeof(FaultHandle))]
         Task<MunicipalityVw> EditMunicipalityAsync(Guid id, string newName);
 
 
         [OperationContract]
+        [FaultContract(typeof(FaultHandle))]
         Task<MunicipalityVw> AddMunicipalityAsync(string name);
 
 
@@ -26,6 +28,7 @@ namespace DBC.Contracts.ServiceContracts
 
 
         [OperationContract]
+        [FaultContract(typeof(FaultHandle))]
         Task<float> FindApplicableTaxAsync(Guid municipalityId, DateTime date);
 
 

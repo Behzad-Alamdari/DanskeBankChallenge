@@ -7,6 +7,7 @@ namespace DBC.WcfServices
     {
         public static void AddWcfServices(this IServiceCollection services)
         {
+            services.AddTransient<FaultExceptionHandlerAttribute>();
             services.AddTransient<IMunicipalityTaxService, MunicipalityTaxManager>();
             services.AddTransient<IMunicipalityTaxRuleService, MunicipalityTaxManager>();
             services.AddTransient<ITaxRulePeriodService, MunicipalityTaxManager>();
